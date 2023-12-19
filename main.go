@@ -7,7 +7,9 @@ import (
 
 func main() {
 	const port = "8080"
+	const filepathRoot = "."
 	servmux := http.NewServeMux()
+	servmux.Handle("/", http.FileServer(http.Dir(filepathRoot)))
 	corsMux := middlewareCors(servmux)
 
 	server := &http.Server{
@@ -15,7 +17,7 @@ func main() {
 		Handler: corsMux,
 	}
 
-	log.Printf("Serving on port: %s\n", port)
+	log.Printf("Serving the file from %s on port: %s\n", filepathRoot, port)
 	log.Fatal(server.ListenAndServe())
 }
 
