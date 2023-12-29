@@ -5,18 +5,26 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/purandixit07/chirpyServer/internal/database"
 )
 
 type apiConfig struct {
 	fileServerHits int
+	db             *database.DB
 }
 
 func main() {
 	const port = "8080"
 	const filepathRoot = "."
 
+	db, err := database.NewDB("database.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	cfg := apiConfig{
 		fileServerHits: 0,
+		db:             db,
 	}
 
 	router := chi.NewRouter()
@@ -27,7 +35,8 @@ func main() {
 	apiRouter := chi.NewRouter()
 	apiRouter.Get("/healthz", handlerReadiness)
 	apiRouter.Get("/reset", cfg.handlerReset)
-	apiRouter.Post("/validate_chirp", handlerChirpsValidate)
+	apiRouter.Post("/chirps", cfg.handlerCreateChirps)
+	apiRouter.Get("/chirps", cfg.handlerRetrieveChirps)
 
 	adminRouter := chi.NewRouter()
 	adminRouter.Get("/metrics", cfg.handlerMetrics)
