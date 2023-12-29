@@ -37,6 +37,7 @@ func main() {
 	apiRouter.Get("/reset", cfg.handlerReset)
 	apiRouter.Post("/chirps", cfg.handlerCreateChirps)
 	apiRouter.Get("/chirps", cfg.handlerRetrieveChirps)
+	apiRouter.Get("/chirps/{chirpID}", cfg.handlerRetrieveChirpById)
 
 	adminRouter := chi.NewRouter()
 	adminRouter.Get("/metrics", cfg.handlerMetrics)
