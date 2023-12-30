@@ -9,7 +9,7 @@ import (
 )
 
 func (cfg *apiConfig) handlerRetrieveChirps(w http.ResponseWriter, r *http.Request) {
-	dbChirps, err := cfg.db.GetChirps()
+	dbChirps, err := cfg.DB.GetChirps()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't get chirps")
 		return
@@ -33,7 +33,7 @@ func (cfg *apiConfig) handlerRetrieveChirpById(w http.ResponseWriter, r *http.Re
 		respondWithError(w, http.StatusBadRequest, "Invalid chirpID")
 		return
 	}
-	dbChirp, err := cfg.db.GetChirpByID(chirpIDInt)
+	dbChirp, err := cfg.DB.GetChirpByID(chirpIDInt)
 	if err != nil {
 		respondWithError(w, http.StatusNotFound, "Couldn't get chirp")
 		return

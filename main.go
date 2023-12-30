@@ -10,7 +10,7 @@ import (
 
 type apiConfig struct {
 	fileServerHits int
-	db             *database.DB
+	DB             *database.DB
 }
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 
 	cfg := apiConfig{
 		fileServerHits: 0,
-		db:             db,
+		DB:             db,
 	}
 
 	router := chi.NewRouter()
@@ -36,6 +36,7 @@ func main() {
 	apiRouter.Get("/healthz", handlerReadiness)
 	apiRouter.Get("/reset", cfg.handlerReset)
 	apiRouter.Post("/chirps", cfg.handlerCreateChirps)
+	apiRouter.Post("/users", cfg.handlerUsersCreate)
 	apiRouter.Get("/chirps", cfg.handlerRetrieveChirps)
 	apiRouter.Get("/chirps/{chirpID}", cfg.handlerRetrieveChirpById)
 

@@ -30,7 +30,7 @@ func (cfg *apiConfig) handlerCreateChirps(w http.ResponseWriter, r *http.Request
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	chirp, err := cfg.db.CreateChirp(cleaned)
+	chirp, err := cfg.DB.CreateChirp(cleaned)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create chirp")
 		return
