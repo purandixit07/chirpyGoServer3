@@ -31,6 +31,14 @@ func NewDB(path string) (*DB, error) {
 	return db, err
 }
 
+func (db *DB) createDB() error {
+	dbStructure := DBStructure{
+		Chirps: map[int]Chirp{},
+		Users:  map[int]User{},
+	}
+	return db.writeDB(dbStructure)
+}
+
 // ensureDB creates a new database file if it doesn't exist
 func (db *DB) ensureDB() error {
 	_, err := os.ReadFile(db.path)
@@ -41,28 +49,12 @@ func (db *DB) ensureDB() error {
 
 }
 
-func (db *DB) createDB() error {
-	dbStructure := DBStructure{
-		Chirps: map[int]Chirp{},
-		Users:  map[int]User{},
+func (db *DB) ResetDB() error {
+	err := os.Remove(db.path)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil
 	}
-	return db.writeDB(dbStructure)
-}
-
-// writeDB writes the database file to disk
-func (db *DB) writeDB(dbStructure DBStructure) error {
-	db.mux.Lock()
-	defer db.mux.Unlock()
-
-	dat, err := json.Marshal(dbStructure)
-	if err != nil {
-		return err
-	}
-	err = os.WriteFile(db.path, dat, 0600)
-	if err != nil {
-		return err
-	}
-	return nil
+	return db.ensureDB()
 }
 
 // loadDB reads the database file into the memory
@@ -83,5 +75,20 @@ func (db *DB) loadDB() (DBStructure, error) {
 	}
 
 	return dbStructure, nil
+}
 
+// writeDB writes the database file to disk
+func (db *DB) writeDB(dbStructure DBStructure) error {
+	db.mux.Lock()
+	defer db.mux.Unlock()
+
+	dat, err := json.Marshal(dbStructure)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(db.path, dat, 0600)
+	if err != nil {
+		return err
+	}
+	return nil
 }
