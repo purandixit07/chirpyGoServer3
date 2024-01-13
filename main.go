@@ -66,6 +66,7 @@ func main() {
 	apiRouter.Post("/chirps", cfg.handlerCreateChirps)
 	apiRouter.Get("/chirps", cfg.handlerRetrieveChirps)
 	apiRouter.Get("/chirps/{chirpID}", cfg.handlerRetrieveChirpById)
+	apiRouter.Delete("/chirps/{chirpID}", cfg.handlerDeleteChirp)
 	router.Mount("/api", apiRouter)
 
 	adminRouter := chi.NewRouter()
