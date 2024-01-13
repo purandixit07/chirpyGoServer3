@@ -20,7 +20,9 @@ type apiConfig struct {
 func main() {
 	const port = "8080"
 	const filepathRoot = "."
+
 	godotenv.Load()
+
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
 		log.Fatal("JWT_SECRET environment variable is not set")
@@ -54,11 +56,14 @@ func main() {
 	apiRouter.Get("/healthz", handlerReadiness)
 	apiRouter.Get("/reset", cfg.handlerReset)
 
-	apiRouter.Post("/chirps", cfg.handlerCreateChirps)
 	apiRouter.Post("/login", cfg.handlerUserLogin)
+	apiRouter.Post("/refresh", cfg.handlerRefresh)
+	apiRouter.Post("/revoke", cfg.handlerRevoke)
 
 	apiRouter.Post("/users", cfg.handlerUsersCreate)
 	apiRouter.Put("/users", cfg.handlerUsersUpdate)
+
+	apiRouter.Post("/chirps", cfg.handlerCreateChirps)
 	apiRouter.Get("/chirps", cfg.handlerRetrieveChirps)
 	apiRouter.Get("/chirps/{chirpID}", cfg.handlerRetrieveChirpById)
 	router.Mount("/api", apiRouter)
