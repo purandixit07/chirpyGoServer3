@@ -110,6 +110,19 @@ func GetBearerToken(headers http.Header) (string, error) {
 	return splitAuth[1], nil
 }
 
+// get api key
+func GetApiKey(header http.Header) (string, error) {
+	apiHeader := header.Get("Authorization")
+	if apiHeader == "" {
+		return "", ErrNoAuthHeaderIncluded
+	}
+	splitAuth := strings.Split(apiHeader, " ")
+	if len(splitAuth) < 2 || splitAuth[0] != "ApiKey" {
+		return "", errors.New("malformed authorization header")
+	}
+	return splitAuth[1], nil
+}
+
 // validate JWT
 func ValidateJWT(tokenString, tokenSecret string) (string, error) {
 	claimsStruct := jwt.RegisteredClaims{}

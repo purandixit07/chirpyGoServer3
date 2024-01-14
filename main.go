@@ -15,6 +15,7 @@ type apiConfig struct {
 	fileServerHits int
 	DB             *database.DB
 	jwtSecret      string
+	ApiKey         string
 }
 
 func main() {
@@ -28,6 +29,10 @@ func main() {
 		log.Fatal("JWT_SECRET environment variable is not set")
 	}
 
+	apiKey := os.Getenv("API_KEY")
+	if apiKey == "" {
+		log.Fatal("API_KEY environmental variable is not set")
+	}
 	db, err := database.NewDB("database.json")
 	if err != nil {
 		log.Fatal(err)
@@ -45,6 +50,7 @@ func main() {
 		fileServerHits: 0,
 		DB:             db,
 		jwtSecret:      jwtSecret,
+		ApiKey:         apiKey,
 	}
 
 	router := chi.NewRouter()

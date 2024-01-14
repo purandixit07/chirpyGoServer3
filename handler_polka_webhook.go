@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/purandixit07/chirpyServer/internal/auth"
 	"github.com/purandixit07/chirpyServer/internal/database"
 )
 
@@ -15,10 +16,19 @@ func (cfg *apiConfig) handlerWebhook(w http.ResponseWriter, r *http.Request) {
 			UserID int `json:"user_id"`
 		}
 	}
+	apiKey, err := auth.GetApiKey(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't find apiKey")
+		return
+	}
+	if apiKey != cfg.ApiKey {
+		respondWithError(w, http.StatusUnauthorized, "ApiKey is invalid")
+		return
+	}
 
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
-	err := decoder.Decode(&params)
+	err = decoder.Decode(&params)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode params")
 		return
