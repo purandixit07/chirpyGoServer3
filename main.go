@@ -63,6 +63,8 @@ func main() {
 	apiRouter.Post("/users", cfg.handlerUsersCreate)
 	apiRouter.Put("/users", cfg.handlerUsersUpdate)
 
+	apiRouter.Post("/polka/webhooks", cfg.handlerWebhook)
+
 	apiRouter.Post("/chirps", cfg.handlerCreateChirps)
 	apiRouter.Get("/chirps", cfg.handlerRetrieveChirps)
 	apiRouter.Get("/chirps/{chirpID}", cfg.handlerRetrieveChirpById)
